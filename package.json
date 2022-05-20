@@ -1,5 +1,5 @@
 {
-  "name": "webpack-5.0-template",
+  "name": "Almost-Amazon",
   "version": "1.0.0",
   "description": "",
   "main": "src/scripts/main.js",
@@ -9,7 +9,7 @@
     "build": "webpack --mode production"
   },
   "keywords": [],
-  "author": "",
+  "author": "Rochelle Rossman",
   "license": "ISC",
   "devDependencies": {
     "css-loader": "^6.2.0",
@@ -33,7 +33,7 @@
     "axios": "^0.21.1",
     "bootstrap": "^5.1.0",
     "dotenv": "^10.0.0",
-    "firebase": "^8.2.0",
+    "firebase": "^8.10.1",
     "sass": "^1.51.0"
   }
 }
