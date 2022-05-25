@@ -1,10 +1,15 @@
 import axios from 'axios';
+import { showAuthors } from '../scripts/components/pages/authors';
 import firebaseConfig from './apiKeys';
 
 const dbUrl = firebaseConfig.databaseURL;
 
 // FIXME:  GET ALL AUTHORS
-const getAuthors = () => {};
+const getAuthors = () => new Promise((resolve, reject) => {
+  axios.get(`${dbUrl}/authors.json`)
+    .then((response) => resolve(Object.values(response.data)))
+    .catch((error) => reject(error));
+});
 
 // FIXME: CREATE AUTHOR
 const createAuthor = () => {};
@@ -18,7 +23,14 @@ const getSingleAuthor = (firebaseKey) => new Promise((resolve, reject) => {
 });
 
 // FIXME: DELETE AUTHOR
-const deleteSingleAuthor = () => {};
+const deleteSingleAuthor = (firebaseKey) => new Promise((resolve, reject) => {
+  axios
+    .delete(`${dbUrl}/authors/${firebaseKey}.json`)
+    .then(() => {
+      showAuthors().then((authorsArray) => resolve(authorsArray));
+    })
+    .catch((error) => reject(error));
+});
 
 // FIXME: UPDATE AUTHOR
 const updateAuthor = () => {};
