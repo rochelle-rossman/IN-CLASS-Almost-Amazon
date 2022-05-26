@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { showAuthors } from '../scripts/components/pages/authors';
 import firebaseConfig from './apiKeys';
 
 const dbUrl = firebaseConfig.databaseURL;
@@ -27,8 +26,14 @@ const deleteSingleAuthor = (firebaseKey) => new Promise((resolve, reject) => {
   axios
     .delete(`${dbUrl}/authors/${firebaseKey}.json`)
     .then(() => {
-      showAuthors().then((authorsArray) => resolve(authorsArray));
+      getAuthors().then((authorsArray) => resolve(authorsArray));
     })
+    .catch((error) => reject(error));
+});
+
+const favoriteAuthor = () => new Promise((resolve, reject) => {
+  axios.get(`${dbUrl}/authors.json?orderBy="favorite"&equalTo=true`)
+    .then((response) => resolve(Object.values(response.data)))
     .catch((error) => reject(error));
 });
 
@@ -36,7 +41,12 @@ const deleteSingleAuthor = (firebaseKey) => new Promise((resolve, reject) => {
 const updateAuthor = () => {};
 
 // TODO: GET A SINGLE AUTHOR'S BOOKS
-const getAuthorBooks = () => {};
+const getAuthorBooks = (authorId) => new Promise((resolve, reject) => {
+  axios
+    .get(`${dbUrl}/books.json?orderBy="author_id"&equalTo="${authorId}"`)
+    .then((response) => resolve(Object.values(response.data)))
+    .catch(reject);
+});
 
 export {
   getAuthors,
@@ -45,4 +55,5 @@ export {
   deleteSingleAuthor,
   updateAuthor,
   getAuthorBooks,
+  favoriteAuthor
 };
