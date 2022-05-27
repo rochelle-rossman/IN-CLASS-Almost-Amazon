@@ -36,8 +36,8 @@ const domEvents = () => {
 
     // VIEW AUTHOR DETAILS
     if (e.target.id.includes('view-author-btn')) {
-      const [, authorFirebaseKey] = e.target.id.split('--');
-      viewAuthorDetails(authorFirebaseKey).then((authorBooksObject) => viewAuthor(authorBooksObject));
+      const [, firebaseKey] = e.target.id.split('--');
+      viewAuthorDetails(firebaseKey).then((authorBooksObject) => viewAuthor(authorBooksObject));
     }
 
     // FIXME: ADD CLICK EVENT FOR DELETING AN AUTHOR
