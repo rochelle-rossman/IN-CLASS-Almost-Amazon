@@ -31,6 +31,7 @@ const deleteSingleAuthor = (firebaseKey) => new Promise((resolve, reject) => {
     .catch((error) => reject(error));
 });
 
+// SHOW FAVE AUTHORS
 const favoriteAuthor = () => new Promise((resolve, reject) => {
   axios.get(`${dbUrl}/authors.json?orderBy="favorite"&equalTo=true`)
     .then((response) => resolve(Object.values(response.data)))
@@ -45,7 +46,7 @@ const getAuthorBooks = (authorId) => new Promise((resolve, reject) => {
   axios
     .get(`${dbUrl}/books.json?orderBy="author_id"&equalTo="${authorId}"`)
     .then((response) => resolve(Object.values(response.data)))
-    .catch(reject);
+    .catch((error) => reject(error));
 });
 
 export {
