@@ -14,9 +14,9 @@ const viewBookDetails = (bookFirebaseKey) => new Promise((resolve, reject) => {
 const viewAuthorDetails = (authorFirebaseKey) => new Promise((resolve, reject) => {
   getSingleAuthor(authorFirebaseKey)
     .then((authorObject) => {
-      getAuthorBooks(authorObject.fireBaseKey)
+      getAuthorBooks(authorFirebaseKey)
         .then((authorBooks) => {
-          resolve({ authorBooks, authorObject });
+          resolve({ authorBooks, ...authorObject });
         });
     }).catch((error) => reject(error));
 });
