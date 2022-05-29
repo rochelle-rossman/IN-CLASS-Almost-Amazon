@@ -3,17 +3,25 @@ import firebaseConfig from './apiKeys';
 
 const dbUrl = firebaseConfig.databaseURL;
 
-// FIXME:  GET ALL AUTHORS
+// GET ALL AUTHORS
 const getAuthors = () => new Promise((resolve, reject) => {
   axios.get(`${dbUrl}/authors.json`)
     .then((response) => resolve(Object.values(response.data)))
     .catch((error) => reject(error));
 });
 
-// FIXME: CREATE AUTHOR
-const createAuthor = () => {};
+// CREATE AUTHOR
+const createAuthor = (authorObject) => new Promise((resolve, reject) => {
+  axios.post(`${dbUrl}/authors.json`, authorObject)
+    .then((response) => {
+      const payload = { firebaseKey: response.data.name };
+      axios.patch(`${dbUrl}/authors/${response.data.name}.json`, payload).then(() => {
+        getAuthors(authorObject.uid).then(resolve);
+      });
+    }).catch((error) => reject(error));
+});
 
-// FIXME: GET SINGLE AUTHOR
+// GET SINGLE AUTHOR
 const getSingleAuthor = (firebaseKey) => new Promise((resolve, reject) => {
   axios
     .get(`${dbUrl}/authors/${firebaseKey}.json`)
@@ -21,14 +29,14 @@ const getSingleAuthor = (firebaseKey) => new Promise((resolve, reject) => {
     .catch((error) => reject(error));
 });
 
-// FIXME: DELETE AUTHOR
+// DELETE AUTHOR
 const deleteSingleAuthor = (firebaseKey) => new Promise((resolve, reject) => {
   axios
     .delete(`${dbUrl}/authors/${firebaseKey}.json`)
     .then(() => {
-      getAuthors().then((authorsArray) => resolve(authorsArray));
+      getAuthors().then(resolve);
     })
-    .catch((error) => reject(error));
+    .catch(reject);
 });
 
 // SHOW FAVE AUTHORS
@@ -39,7 +47,13 @@ const favoriteAuthor = () => new Promise((resolve, reject) => {
 });
 
 // FIXME: UPDATE AUTHOR
-const updateAuthor = () => {};
+const updateAuthor = (authorObject) => new Promise((resolve, reject) => {
+  axios
+    .patch(`${dbUrl}/authors/${authorObject.firebaseKey}.json`, authorObject)
+    .then(() => getAuthors(authorObject))
+    .then(resolve)
+    .catch(reject);
+});
 
 // TODO: GET A SINGLE AUTHOR'S BOOKS
 const getAuthorBooks = (authorId) => new Promise((resolve, reject) => {
