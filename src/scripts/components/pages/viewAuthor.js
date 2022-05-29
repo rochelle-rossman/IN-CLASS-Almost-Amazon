@@ -3,7 +3,6 @@ import renderToDOM from '../../helpers/renderToDom';
 
 const viewAuthor = (obj) => {
   clearDom();
-  console.warn(obj);
 
   let domString = '';
   let bookString = '';
@@ -20,7 +19,7 @@ const viewAuthor = (obj) => {
   renderToDOM('#view', domString);
 
   obj.authorBooks.forEach((book) => {
-    bookString = ` <div class="card">
+    bookString += ` <div class="card">
         <img class="card-img-top" src=${book.image} alt=${book.title} style="height: 400px;">
         <div class="card-body" style="height: 180px;">
           <h5 class="card-title">${book.title}</h5>
@@ -31,7 +30,6 @@ const viewAuthor = (obj) => {
             <i id="delete-book-btn--${book.firebaseKey}" class="btn btn-danger fas fa-trash-alt"></i>
         </div>
       </div>`;
-    console.warn(book);
   });
   renderToDOM('#store', bookString);
 };
