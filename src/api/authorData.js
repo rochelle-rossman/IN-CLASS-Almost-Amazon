@@ -5,8 +5,15 @@ const dbUrl = firebaseConfig.databaseURL;
 
 // GET ALL AUTHORS
 const getAuthors = () => new Promise((resolve, reject) => {
-  axios.get(`${dbUrl}/authors.json`)
-    .then((response) => resolve(Object.values(response.data)))
+  axios
+    .get(`${dbUrl}/authors.json`)
+    .then((response) => {
+      if (response.data) {
+        resolve(Object.values(response.data));
+      } else {
+        resolve([]);
+      }
+    })
     .catch((error) => reject(error));
 });
 
