@@ -4,9 +4,9 @@ import firebaseConfig from './apiKeys';
 const dbUrl = firebaseConfig.databaseURL;
 
 // GET ALL AUTHORS
-const getAuthors = () => new Promise((resolve, reject) => {
+const getAuthors = (uid) => new Promise((resolve, reject) => {
   axios
-    .get(`${dbUrl}/authors.json`)
+    .get(`${dbUrl}/authors.json?orderBy="uid"&equalTo="${uid}"`)
     .then((response) => {
       if (response.data) {
         resolve(Object.values(response.data));
@@ -18,12 +18,12 @@ const getAuthors = () => new Promise((resolve, reject) => {
 });
 
 // CREATE AUTHOR
-const createAuthor = (authorObject) => new Promise((resolve, reject) => {
+const createAuthor = (authorObject, uid) => new Promise((resolve, reject) => {
   axios.post(`${dbUrl}/authors.json`, authorObject)
     .then((response) => {
       const payload = { firebaseKey: response.data.name };
       axios.patch(`${dbUrl}/authors/${response.data.name}.json`, payload).then(() => {
-        getAuthors(authorObject.uid).then(resolve);
+        getAuthors(uid).then((authorArr) => resolve(authorArr));
       });
     }).catch((error) => reject(error));
 });
@@ -53,7 +53,7 @@ const favoriteAuthor = () => new Promise((resolve, reject) => {
     .catch((error) => reject(error));
 });
 
-// FIXME: UPDATE AUTHOR
+// UPDATE AUTHOR
 const updateAuthor = (authorObject) => new Promise((resolve, reject) => {
   axios
     .patch(`${dbUrl}/authors/${authorObject.firebaseKey}.json`, authorObject)
@@ -62,7 +62,7 @@ const updateAuthor = (authorObject) => new Promise((resolve, reject) => {
     .catch(reject);
 });
 
-// TODO: GET A SINGLE AUTHOR'S BOOKS
+// GET A SINGLE AUTHOR'S BOOKS
 const getAuthorBooks = (authorId) => new Promise((resolve, reject) => {
   axios
     .get(`${dbUrl}/books.json?orderBy="author_id"&equalTo="${authorId}"`)

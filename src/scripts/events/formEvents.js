@@ -1,9 +1,9 @@
-import { createAuthor, updateAuthor } from '../../api/authorData';
+import { createAuthor, getAuthors, updateAuthor } from '../../api/authorData';
 import { createBook, updateBook } from '../../api/bookData';
 import { showAuthors } from '../components/pages/authors';
 import { showBooks } from '../components/pages/books';
 
-const formEvents = () => {
+const formEvents = (uid) => {
   document.querySelector('#main-container').addEventListener('submit', (e) => {
     e.preventDefault();
     // CLICK EVENT FOR SUBMITTING FORM FOR ADDING A BOOK
@@ -14,9 +14,12 @@ const formEvents = () => {
         price: document.querySelector('#price').value,
         description: document.querySelector('#description').value,
         sale: document.querySelector('#sale').checked,
-        author_id: document.querySelector('#author_id').value
+        author_id: document.querySelector('#author_id').value,
+        uid
       };
-      createBook(bookObject).then(showBooks);
+      createBook(bookObject, uid).then((authorArr) => {
+        showBooks(authorArr);
+      });
     }
 
     // CLICK EVENT FOR EDITING A BOOK
@@ -29,9 +32,10 @@ const formEvents = () => {
         description: document.querySelector('#description').value,
         sale: document.querySelector('#sale').checked,
         author_id: document.querySelector('#author_id').value,
-        firebaseKey
+        firebaseKey,
+        uid
       };
-      updateBook(bookObject).then(showBooks);
+      updateBook(bookObject, uid).then(showBooks);
     }
 
     // CLICK EVENT FOR SUBMITTING FORM FOR ADDING AN AUTHOR
@@ -39,20 +43,26 @@ const formEvents = () => {
       const authorObject = {
         email: document.querySelector('#email').value,
         first_name: document.querySelector('#first_name').value,
-        last_name: document.querySelector('#last_name').value
+        last_name: document.querySelector('#last_name').value,
+        favorite: document.querySelector('#favorite').checked,
+        uid
       };
-      createAuthor(authorObject).then(showAuthors);
+      createAuthor(authorObject, uid).then(showAuthors);
     }
-    // FIXME:ADD CLICK EVENT FOR EDITING AN AUTHOR
+    // ADD CLICK EVENT FOR EDITING AN AUTHOR
     if (e.target.id.includes('update-author')) {
+      // eslint-disable-next-line no-shadow
       const [, firebaseKey] = e.target.id.split('--');
       const authorObject = {
         email: document.querySelector('#email').value,
         first_name: document.querySelector('#first_name').value,
         last_name: document.querySelector('#last_name').value,
-        firebaseKey
+        firebaseKey,
+        uid
       };
-      updateAuthor(authorObject).then(showAuthors);
+      updateAuthor(authorObject, uid).then(() => {
+        getAuthors(uid).then((authorArr) => showAuthors(authorArr));
+      });
     }
   });
 };
