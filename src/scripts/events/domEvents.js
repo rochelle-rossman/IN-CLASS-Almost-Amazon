@@ -1,5 +1,5 @@
-import { getSingleAuthor } from '../../api/authorData';
-import { deleteBook, getSingleBook } from '../../api/bookData';
+import { getAuthors, getSingleAuthor } from '../../api/authorData';
+import { deleteBook, getBooks, getSingleBook } from '../../api/bookData';
 import { showBooks } from '../components/pages/books';
 import { showAuthors } from '../components/pages/authors';
 import viewBook from '../components/pages/viewBook';
@@ -15,7 +15,11 @@ const domEvents = (uid) => {
       // eslint-disable-next-line no-alert
       if (window.confirm('Want to delete?')) {
         const [, firebaseKey] = e.target.id.split('--');
-        deleteBook(firebaseKey).then((booksArray) => showBooks(booksArray));
+        deleteBook(firebaseKey).then(() => {
+          getBooks(uid).then((booksArray) => {
+            showBooks(booksArray);
+          });
+        });
       }
     }
 
@@ -47,7 +51,11 @@ const domEvents = (uid) => {
       // eslint-disable-next-line no-alert
       if (window.confirm('Want to delete?')) {
         const [, firebaseKey] = e.target.id.split('--');
-        deleteAuthorBooks(firebaseKey).then((newAuthorsArray) => showAuthors(newAuthorsArray));
+        deleteAuthorBooks(firebaseKey).then(() => {
+          getAuthors(uid).then((authorsArray) => {
+            showAuthors(authorsArray);
+          });
+        });
       }
     }
 
