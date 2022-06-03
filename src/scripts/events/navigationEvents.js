@@ -1,31 +1,34 @@
-import { favoriteAuthor, getAuthors } from '../../api/authorData';
-import { booksOnSale, getBooks } from '../../api/bookData';
+import { getAuthors } from '../../api/authorData';
+import { getBooks } from '../../api/bookData';
 import { showAuthors, emptyAuthors } from '../components/pages/authors';
 import { showBooks } from '../components/pages/books';
 import signOut from '../helpers/auth/signOut';
 
 // navigation events
-const navigationEvents = () => {
+const navigationEvents = (uid) => {
   // LOGOUT BUTTON
   document.querySelector('#logout-button')
     .addEventListener('click', signOut);
 
   // BOOKS ON SALE
   document.querySelector('#sale-books').addEventListener('click', () => {
-    booksOnSale().then((saleBooksArray) => showBooks(saleBooksArray));
+    getBooks(uid).then((booksArray) => {
+      const booksOnSale = booksArray.filter((book) => book.sale);
+      showBooks(booksOnSale);
+    });
   });
 
   // ALL BOOKS
   document.querySelector('#all-books').addEventListener('click', () => {
-    getBooks().then((booksArray) => showBooks(booksArray));
+    getBooks(uid).then((booksArray) => showBooks(booksArray));
   });
 
-  // FIXME: STUDENTS Create an event listener for the Authors
+  // STUDENTS Create an event listener for the Authors
   // 1. When a user clicks the authors link, make a call to firebase to get all authors
   // 2. Convert the response to an array because that is what the makeAuthors function is expecting
   // 3. If the array is empty because there are no authors, make sure to use the emptyAuthor function
   document.querySelector('#authors').addEventListener('click', () => {
-    getAuthors().then((authorsArray) => {
+    getAuthors(uid).then((authorsArray) => {
       if (authorsArray) {
         showAuthors(authorsArray);
       } else {
@@ -36,7 +39,10 @@ const navigationEvents = () => {
 
   // SHOW FAVE AUTHORS
   document.querySelector('#faveAuthors').addEventListener('click', () => {
-    favoriteAuthor().then((faveAuthorsArray) => showAuthors(faveAuthorsArray));
+    getAuthors(uid).then((authorsArray) => {
+      const favArray = authorsArray.filter((author) => author.favorite);
+      showAuthors(favArray);
+    });
   });
 
   // STRETCH: SEARCH
